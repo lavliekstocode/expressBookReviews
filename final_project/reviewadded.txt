@@ -1,2 +1,7 @@
+curl -c cookies.txt -X POST http://localhost:5000/customer/login -H "Content-Type: application/json" -d "{\"username\":\"lavanya\",\"password\":\"1234\"}"
+
 curl -b cookies.txt -X PUT "http://localhost:5000/customer/auth/review/1?review=Amazing%20book"
-{"message":"Review added/updated successfully"}
+
+{
+  "message": "Review added/updated successfully"
+}
