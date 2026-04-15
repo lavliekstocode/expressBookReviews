@@ -4,40 +4,69 @@ let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
-
+// Register new user
 public_users.post("/register", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password required" });
+  }
+
+  if (!isValid(username)) {
+    return res.status(404).json({ message: "User already exists" });
+  }
+
+  users.push({ username, password });
+  return res.status(200).json({ message: "User registered successfully" });
 });
 
-// Get the book list available in the shop
+// Get all books
 public_users.get('/',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(200).send(JSON.stringify(books, null, 4));
 });
 
-// Get book details based on ISBN
+// Get book details by ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
+  const isbn = req.params.isbn;
+
+  if (!books[isbn]) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  return res.status(200).send(JSON.stringify(books[isbn], null, 4));
+});
   
-// Get book details based on author
+// Get books by author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const author = req.params.author;
+
+  const filteredBooks = Object.values(books).filter(
+    book => book.author.toLowerCase() === author.toLowerCase()
+  );
+
+  return res.status(200).json(filteredBooks);
 });
 
-// Get all books based on title
+// Get books by title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const title = req.params.title;
+
+  const filteredBooks = Object.values(books).filter(
+    book => book.title.toLowerCase() === title.toLowerCase()
+  );
+
+  return res.status(200).json(filteredBooks);
 });
 
-//  Get book review
+// Get book reviews
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+
+  if (!books[isbn]) {
+    return res.status(404).json({ message: "Book not found" });
+  }
+
+  return res.status(200).json(books[isbn].reviews);
 });
 
 module.exports.general = public_users;
